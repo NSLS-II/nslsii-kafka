@@ -1,1 +1,4 @@
 bluesky-kafka
+event-model
+nslsii
+prefect
