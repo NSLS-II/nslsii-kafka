@@ -4,14 +4,13 @@ from pprint import pformat
 from bluesky_kafka import RemoteDispatcher
 from event_model import RunRouter
 from nslsii import _read_bluesky_kafka_config_file
-from prefect.tasks.prefect import create_flow_run
+from prefect.deployments import run_deployment
 
 
 def get_arg_parser():
-    arg_parser = argparse.ArgumentParser(description="Run a Prefect workflow in response to a Kafka message.")
+    arg_parser = argparse.ArgumentParser(description="Run a Prefect 2 workflow in response to a Kafka message.")
     arg_parser.add_argument("beamline_name")
-    arg_parser.add_argument("flow_id")
-    arg_parser.add_argument("prefect_project_name")
+    arg_parser.add_argument("deployment_name")
     arg_parser.add_argument("--kafka-config-file", required=False, default="/etc/bluesky/kafka.yml")
     return arg_parser
 
@@ -47,7 +46,7 @@ def message_to_workflow():
     document_to_workflow_dispatcher = RemoteDispatcher(
         topics=[f"{args.beamline_name}.bluesky.runengine.documents"],
         bootstrap_servers=bootstrap_servers,
-        group_id=f"{args.beamline_name}-workflow",
+        group_id=f"{args.beamline_name}-workflow-2",
         consumer_config=consumer_config,
     )
 
@@ -56,14 +55,10 @@ def message_to_workflow():
 
         def run_flow_on_stop_document(doc_name, doc):
             if doc_name == "stop":
-                # kick off a Prefect workflow
+                # kick off a Prefect 2 deployment
                 print(f"stop document:\n{pformat(doc)}")
-                print(f"run flow {args.flow_id} from Prefect project {args.prefect_project_name}")
-                create_flow_run.run(
-                    flow_name=args.flow_id,
-                    project_name=args.prefect_project_name,
-                    parameters={"stop_doc": doc},
-                )
+                print(f"run deployment {args.deployment_name} for {args.beamline_name}")
+                run_deployment(name=f"end-of-run-workflow/{args.beamline_name}-end-of-run-workflow")
             else:
                 print(doc_name)
                 pass
