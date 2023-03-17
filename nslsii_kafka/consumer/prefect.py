@@ -58,7 +58,9 @@ def message_to_workflow():
                 # kick off a Prefect 2 deployment
                 print(f"stop document:\n{pformat(doc)}")
                 print(f"run deployment {args.deployment_name} for {args.beamline_name}")
-                prefect.deployments.run_deployment(name=f"end-of-run-workflow/{args.beamline_name}-end-of-run-workflow")
+                prefect.deployments.run_deployment(
+                    name=f"end-of-run-workflow/{args.beamline_name}-end-of-run-workflow"
+                )
             else:
                 print(doc_name)
                 pass
