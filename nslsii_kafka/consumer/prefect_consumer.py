@@ -4,7 +4,7 @@ from pprint import pformat
 from bluesky_kafka import RemoteDispatcher
 from event_model import RunRouter
 from nslsii.kafka_utils import _read_bluesky_kafka_config_file
-import prefect
+from prefect.deployments import run_deployment
 
 
 def get_arg_parser():
@@ -57,9 +57,10 @@ def message_to_workflow():
             if doc_name == "stop":
                 # kick off a Prefect 2 deployment
                 print(f"stop document:\n{pformat(doc)}")
-                print(f"run deployment {args.deployment_name} for {args.beamline_name}")
-                prefect.deployments.run_deployment(
-                    name=f"end-of-run-workflow/{args.beamline_name}-end-of-run-workflow"
+                print(f"run deployment {args.deployment_name}")
+                run_deployment(
+                    name=args.deployment_name,
+                    parameters={"stop_doc": doc}
                 )
             else:
                 print(doc_name)
