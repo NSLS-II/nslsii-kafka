@@ -61,6 +61,7 @@ def message_to_workflow():
                 run_deployment(
                     name=args.deployment_name,
                     parameters={"stop_doc": doc},
+                    timeout=30
                 )
             else:
                 print(doc_name)
