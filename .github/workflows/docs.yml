@@ -46,8 +46,9 @@ jobs:
           pip install -r requirements-dev.txt
           pip list
 
-      - name: Build Docs
-        run: make -C docs/ html
+      # TODO: Add doc source files to the repo
+      # - name: Build Docs
+      #   run: make -C docs/ html
 
       - uses: actions/upload-artifact@v3
         with:
