@@ -9,7 +9,7 @@ from prefect.deployments import run_deployment
 
 def get_arg_parser():
     arg_parser = argparse.ArgumentParser(description="Run a Prefect 2 workflow in response to a Kafka message.")
-    arg_parser.add_argument("beamline_name")
+    arg_parser.add_argument("endstation")
     arg_parser.add_argument("deployment_name")
     arg_parser.add_argument("--kafka-config-file", required=False, default="/etc/bluesky/kafka.yml")
     return arg_parser
@@ -44,9 +44,9 @@ def message_to_workflow():
     # print(f"consumer_config:\n{pformat(consumer_config)}")
 
     document_to_workflow_dispatcher = RemoteDispatcher(
-        topics=[f"{args.beamline_name}.bluesky.runengine.documents"],
+        topics=[f"{args.endstation}.bluesky.runengine.documents"],
         bootstrap_servers=bootstrap_servers,
-        group_id=f"{args.beamline_name}-workflow-2",
+        group_id=f"{args.endstation}-workflow-2",
         consumer_config=consumer_config,
     )
 
