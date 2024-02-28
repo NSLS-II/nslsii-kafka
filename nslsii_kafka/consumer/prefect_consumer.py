@@ -60,7 +60,7 @@ def message_to_workflow():
                 print(f"run deployment {args.deployment_name}")
                 run_deployment(
                     name=args.deployment_name,
-                    parameters={"stop_doc": doc}
+                    parameters={"stop_doc": doc},
                 )
             else:
                 print(doc_name)
